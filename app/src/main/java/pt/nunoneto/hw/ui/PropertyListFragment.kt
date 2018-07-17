@@ -20,9 +20,8 @@ class PropertyListFragment : Fragment() {
         }
     }
 
-    lateinit var viewModel: PropertyListViewModel
-
-    private var adapter: PropertyListAdapter = PropertyListAdapter(context)
+    private lateinit var viewModel: PropertyListViewModel
+    private lateinit var adapter: PropertyListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.property_list_fragment, container, false)
@@ -37,7 +36,9 @@ class PropertyListFragment : Fragment() {
         setObservers()
     }
 
-    fun setUiComponents() {
+    private fun setUiComponents() {
+        adapter = PropertyListAdapter(context!!)
+
         rv_property_list.layoutManager = LinearLayoutManager(context)
         rv_property_list.adapter = adapter
     }
@@ -54,5 +55,6 @@ class PropertyListFragment : Fragment() {
         }
 
         adapter.properties = properties
+        adapter.notifyDataSetChanged()
     }
 }

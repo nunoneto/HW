@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">HW</string>
+
+    <string name="rating">%1$.1f out of 10</string>
+    <string name="price_per_night">%1$s€ \n per night</string>
+    <string name="featured">Featured</string>
+
 </resources>

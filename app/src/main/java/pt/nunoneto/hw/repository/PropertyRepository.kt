@@ -42,11 +42,18 @@ object PropertyRepository {
         }
 
         val rating: Double? = if (property.overallRating != null) {
-            (property.overallRating.overall / 100).toDouble()
+            property.overallRating.overall.toDouble() / 10
         } else {
             null
         }
 
-        return Property(property.id, property.isFeatured, rating, lowestPriceNightEur)
+        val imageUrl = if (property.images != null && property.images.isNotEmpty()) {
+            val image = property.images[0]
+            "http://" + image.prefix + image.suffix
+        } else {
+            null
+        }
+
+        return Property(property.id, property.name, property.isFeatured, rating, lowestPriceNightEur, imageUrl)
     }
 }
