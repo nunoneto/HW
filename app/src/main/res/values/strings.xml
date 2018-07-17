@@ -5,4 +5,6 @@
     <string name="price_per_night">%1$s€ \n per night</string>
     <string name="featured">Featured</string>
 
+    <string name="property_load_error">Sorry, could not load any properties :(</string>
+
 </resources>

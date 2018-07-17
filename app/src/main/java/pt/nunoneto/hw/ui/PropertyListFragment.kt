@@ -47,12 +47,26 @@ class PropertyListFragment : Fragment() {
         viewModel.propertyList.observe(this, Observer<List<Property>> {
             properties: List<Property>? ->  updateAdapter(properties)
         })
+
+        viewModel.error.observe(this, Observer<Boolean> {
+            error -> onError(error)
+        })
+    }
+
+    private fun onError(error: Boolean?) {
+        if (error == true) {
+            pb_load_properties.visibility = View.GONE
+            tv_error.visibility = View.VISIBLE
+        }
     }
 
     private fun updateAdapter(properties: List<Property>?) {
         if (properties == null) {
             return
         }
+
+        pb_load_properties.visibility = View.GONE
+        rv_property_list.visibility = View.VISIBLE
 
         adapter.properties = properties
         adapter.notifyDataSetChanged()

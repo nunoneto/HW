@@ -12,7 +12,9 @@ import pt.nunoneto.hw.repository.PropertyRepository
 class PropertyListViewModel : ViewModel(), SingleObserver<List<Property>> {
 
     var propertyList: MutableLiveData<List<Property>> = MutableLiveData()
+    var error: MutableLiveData<Boolean> = MutableLiveData()
 
+    lateinit var disposable: Disposable
 
     init {
         getProperties()
@@ -30,10 +32,19 @@ class PropertyListViewModel : ViewModel(), SingleObserver<List<Property>> {
     }
 
     override fun onSubscribe(d: Disposable) {
-        // do nothing
+        disposable = d
     }
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
+        error.value = true
+    }
+
+    override fun onCleared() {
+        if (::disposable.isInitialized && !disposable.isDisposed) {
+            disposable.dispose()
+        }
+
+        super.onCleared()
     }
 }
