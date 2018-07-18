@@ -1,12 +1,16 @@
 package pt.nunoneto.hw.network
 
+import io.reactivex.Observable
 import pt.nunoneto.hw.network.response.PropertyListResponse
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface IHostelServices {
 
-    @GET("bf8d095f2e92da94938810b8a8187c21/raw/70b112f88e803bf0f101f2c823a186f3d076d9e6/properties.json")
-    fun getProperties() : Call<PropertyListResponse>
+    @GET(RequestValues.GET_PROPERTIES)
+    fun getProperties() : Observable<PropertyListResponse>
 
+    @GET(RequestValues.NETWORK_STATS)
+    fun sendNetworkStats(@Query("action") action: String, @Query("duration") duration: Long): Call<Number>
 }

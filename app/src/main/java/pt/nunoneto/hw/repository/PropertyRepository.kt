@@ -18,28 +18,10 @@ class PropertyRepository {
     }
 
     fun getProperties() : Single<List<Property>> {
-        return Single.create {
-            emitter ->
-
-            val response = service
-                    .getProperties()
-                    .execute()
-
-            if (response == null) {
-                emitter.onError(Throwable("Request Error"))
-                return@create
-            }
-
-            val propertyList = Observable.just(response)
-                    .flatMapIterable { response -> response.body()?.properties }
-                    .map { item -> mapProperty(item) }
-                    .toList()
-                    .blockingGet()
-
-            emitter.onSuccess(propertyList)
-
-            //TODO network metadata request
-        }
+        return service.getProperties()
+                .flatMapIterable { response: PropertyListResponse ->  response.properties }
+                .map { item -> mapProperty(item) }
+                .toList()
     }
 
     private fun mapProperty(property: PropertyListResponse.Property) : Property {
