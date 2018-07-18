@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HW</string>
+    <string name="app_name">Hostel World</string>
 
     <string name="rating">%1$.1f out of 10</string>
     <string name="price_per_night">%1$s€ \n per night</string>

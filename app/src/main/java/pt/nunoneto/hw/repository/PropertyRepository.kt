@@ -1,19 +1,27 @@
 package pt.nunoneto.hw.repository
 
 import io.reactivex.*
+import pt.nunoneto.hw.HWApplication
 import pt.nunoneto.hw.entities.Property
-import pt.nunoneto.hw.network.NetworkHelper
+import pt.nunoneto.hw.network.IHostelServices
 import pt.nunoneto.hw.network.response.PropertyListResponse
 import pt.nunoneto.hw.utils.CurrencyUtils
-import kotlin.math.round
+import javax.inject.Inject
 
-object PropertyRepository {
+class PropertyRepository {
+
+    @Inject
+    lateinit var service: IHostelServices
+
+    init {
+        HWApplication.instance.appComponent.inject(this)
+    }
 
     fun getProperties() : Single<List<Property>> {
         return Single.create {
             emitter ->
 
-            val response = NetworkHelper.service
+            val response = service
                     .getProperties()
                     .execute()
 

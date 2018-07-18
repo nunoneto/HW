@@ -6,22 +6,33 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import pt.nunoneto.hw.HWApplication
 import pt.nunoneto.hw.entities.Property
 import pt.nunoneto.hw.repository.PropertyRepository
+import javax.inject.Inject
 
 class PropertyListViewModel : ViewModel(), SingleObserver<List<Property>> {
 
+    // repository
+    @Inject
+    lateinit var propertyRepository: PropertyRepository
+
+    // data
     var propertyList: MutableLiveData<List<Property>> = MutableLiveData()
     var error: MutableLiveData<Boolean> = MutableLiveData()
 
     lateinit var disposable: Disposable
 
     init {
+        // inject repository
+        HWApplication.instance.appComponent.inject(this)
+
+        // load properties
         getProperties()
     }
 
     private fun getProperties() {
-        PropertyRepository.getProperties()
+        propertyRepository.getProperties()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this)
@@ -41,6 +52,7 @@ class PropertyListViewModel : ViewModel(), SingleObserver<List<Property>> {
     }
 
     override fun onCleared() {
+        // dispose of subscription if viewmodel is discarded
         if (::disposable.isInitialized && !disposable.isDisposed) {
             disposable.dispose()
         }
