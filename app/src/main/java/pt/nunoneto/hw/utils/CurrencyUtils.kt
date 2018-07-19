@@ -1,11 +1,13 @@
 package pt.nunoneto.hw.utils
 
+import kotlin.math.abs
+
 class CurrencyUtils {
 
     companion object {
 
         fun bolivianToEuro(bolivianValue: Double) : Double {
-            return bolivianValue / 7.55
+            return abs(bolivianValue) / 7.55
         }
     }
 }

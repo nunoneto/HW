@@ -9,7 +9,7 @@ import pt.nunoneto.hw.network.statistics.NetworkStatisticsReporter
 import pt.nunoneto.hw.utils.CurrencyUtils
 import javax.inject.Inject
 
-class PropertyRepository {
+open class PropertyRepository {
 
     @Inject
     lateinit var service: IHostelServices
@@ -52,22 +52,29 @@ class PropertyRepository {
         }
     }
 
-    private fun mapProperty(property: PropertyListResponse.Property) : Property {
-        val lowestPriceNightEur: Double? = if (property.lowestPricePerNight != null) {
+    fun mapProperty(property: PropertyListResponse.Property) : Property {
+        val lowestPriceNightEur: Double? = if (property.lowestPricePerNight != null
+                && property.lowestPricePerNight.value > 0.0) {
             CurrencyUtils.bolivianToEuro(property.lowestPricePerNight.value)
         } else {
             null
         }
 
-        val rating: Double? = if (property.overallRating != null) {
+        val rating: Double? = if (property.overallRating != null && property.overallRating.overall in 0 .. 100) {
             property.overallRating.overall.toDouble() / 10
         } else {
             null
         }
 
         val imageUrl = if (property.images != null && property.images.isNotEmpty()) {
+
             val image = property.images[0]
-            "http://" + image.prefix + image.suffix
+            if (image.prefix.isNullOrEmpty() && image.suffix.isNullOrEmpty()) {
+                null
+            } else {
+                "http://" + image.prefix + image.suffix
+            }
+
         } else {
             null
         }

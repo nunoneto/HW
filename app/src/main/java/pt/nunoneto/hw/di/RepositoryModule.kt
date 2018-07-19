@@ -7,11 +7,11 @@ import pt.nunoneto.hw.repository.PropertyRepository
 import javax.inject.Singleton
 
 @Module
-class RepositoryModule {
+open class RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesPropertyRepository() : PropertyRepository {
+    open fun providesPropertyRepository() : PropertyRepository {
         return PropertyRepository()
     }
 
