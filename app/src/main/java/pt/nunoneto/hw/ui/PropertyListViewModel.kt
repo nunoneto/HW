@@ -21,7 +21,7 @@ class PropertyListViewModel : ViewModel(), SingleObserver<List<Property>> {
     var propertyList: MutableLiveData<List<Property>> = MutableLiveData()
     var error: MutableLiveData<Boolean> = MutableLiveData()
 
-    lateinit var disposable: Disposable
+    private lateinit var disposable: Disposable
 
     init {
         // inject repository

@@ -18,6 +18,7 @@ open class PropertyRepository {
     lateinit var networkStatisticsReporter: NetworkStatisticsReporter
 
     init {
+        // class has to be open for mockito to mock the object
         HWApplication.instance.appComponent.inject(this)
     }
 
@@ -69,7 +70,7 @@ open class PropertyRepository {
         val imageUrl = if (property.images != null && property.images.isNotEmpty()) {
 
             val image = property.images[0]
-            if (image.prefix.isNullOrEmpty() && image.suffix.isNullOrEmpty()) {
+            if (image.prefix.isEmpty() && image.suffix.isEmpty()) {
                 null
             } else {
                 "http://" + image.prefix + image.suffix
