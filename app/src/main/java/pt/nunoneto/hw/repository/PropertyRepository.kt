@@ -5,6 +5,7 @@ import pt.nunoneto.hw.HWApplication
 import pt.nunoneto.hw.entities.Property
 import pt.nunoneto.hw.network.IHostelServices
 import pt.nunoneto.hw.network.response.PropertyListResponse
+import pt.nunoneto.hw.network.statistics.NetworkStatisticsReporter
 import pt.nunoneto.hw.utils.CurrencyUtils
 import javax.inject.Inject
 
@@ -13,15 +14,42 @@ class PropertyRepository {
     @Inject
     lateinit var service: IHostelServices
 
+    @Inject
+    lateinit var networkStatisticsReporter: NetworkStatisticsReporter
+
     init {
         HWApplication.instance.appComponent.inject(this)
     }
 
     fun getProperties() : Single<List<Property>> {
-        return service.getProperties()
-                .flatMapIterable { response: PropertyListResponse ->  response.properties }
-                .map { item -> mapProperty(item) }
-                .toList()
+        return Single.create {
+            emitter ->
+
+            val response = service
+                    .getProperties()
+                    .execute()
+
+            if (response == null) {
+                emitter.onError(Throwable("Request Error"))
+                return@create
+            }
+
+            val propertyList = Observable.just(response)
+                    .flatMapIterable { response -> response.body()?.properties }
+                    .map { item -> mapProperty(item) }
+                    .toList()
+                    .blockingGet()
+
+            emitter.onSuccess(propertyList)
+
+            // log network request after the result has already been delivered to the UI
+            val rawResponse = response.raw()
+
+            networkStatisticsReporter.sendNetworkStatistics(
+                    rawResponse.request().url().encodedPath(),
+                    rawResponse.receivedResponseAtMillis() - rawResponse.sentRequestAtMillis()
+            )
+        }
     }
 
     private fun mapProperty(property: PropertyListResponse.Property) : Property {
