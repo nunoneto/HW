@@ -32,7 +32,7 @@ class NetworkStatisticsReporter {
             return
         }
 
-        val response = service.sendNetworkStats(action, duration).execute()
+        service.sendNetworkStats(action, duration).execute()
     }
 
     private fun getActionForRequest(path: String) : String? {
